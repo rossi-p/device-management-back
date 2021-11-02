@@ -1,54 +1,46 @@
-const db = require('../db/config')
-const { Category } = require('../models/Category')
+const db = require('../db')
 
 verifyWhenCreate = async (req, res, next) => {
     try {
         if (!req.body.name) {
-            res.status(400).send({ message: 'Bad request!' })
+            res.status(400).send({ message: process.env.ERROR_MESSSAGE_400 })
             return
         }
         if (req.body.name.length > 128) {
-            res.status(400).send({ message: 'Bad request!' })
+            res.status(400).send({ message: process.env.ERROR_MESSSAGE_400 })
             return
         }
-        db.connect()
         if (await checkIfExists({ name: req.body.name }) !== 0) {
-            res.status(409).send({ message: 'Conflict, category already exist!' })
+            res.status(409).send({ message: process.env.ERROR_MESSSAGE_409 })
             return
         }
         next()
     } catch (err) {
         console.log(err)
-    } finally {
-        db.destroy()
     }
 }
 
 verifyWhenDelete = async (req, res, next) => {
     try {
-        db.connect()
         if (await checkIfExists({ id: req.params.id }) === 0) {
-            res.status(404).send({ message: 'Data not found!' })
+            res.status(404).send({ message: process.env.ERROR_MESSSAGE_404  })
             return
         }
         next()
     } catch (err) {
         console.log(err)
-    } finally {
-        db.destroy()
     }
 }
 
 async function checkIfExists({ name, id }) {
     let countCategory = null
-    console.log(name, id)
     if (name) {
-        countCategory = await Category.query()
+        countCategory = await db.Category.query()
             .count('name as quantity')
             .where('name', name)
             .andWhere('isDeleted', 0)
     } else {
-        countCategory = await Category.query()
+        countCategory = await db.Category.query()
             .count('name as quantity')
             .where('id', id)
             .andWhere('isDeleted', 0)

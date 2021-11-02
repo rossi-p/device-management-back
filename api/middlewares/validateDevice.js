@@ -1,60 +1,50 @@
-const { destroy } = require('../db/config')
-const db = require('../db/config')
-const { Category } = require('../models/Category')
-const { Device } = require('../models/Device')
+const db = require('../db')
 
 verifyWhenCreate = async (req, res, next) => {
     try {
         if (!req.body.category) {
-            res.status(400).send({ message: 'Bad request!' })
+            res.status(400).send({ message: process.env.ERROR_MESSSAGE_400 })
             return
         }
         if (!req.body.color) {
-            res.status(400).send({ message: 'Bad request!' })
+            res.status(400).send({ message: process.env.ERROR_MESSSAGE_400 })
             return
         }
         if (!req.body.partNumber) {
-            res.status(400).send({ message: 'Bad request!' })
+            res.status(400).send({ message: process.env.ERROR_MESSSAGE_400 })
             return
         }
         if (req.body.color.length > 16 || !/^[a-zA-Z\s]*$/.test(req.body.color)) {
-            res.status(400).send({ message: 'Bad request!' })
+            res.status(400).send({ message: process.env.ERROR_MESSSAGE_400 })
             return
         }
-        db.connect()
-        const ifCategoryExist = await Category.query()
+        const ifCategoryExist = await db.Category.query()
             .count('id as quantity')
             .where('id', req.body.category)
             .andWhere('isDeleted', 0)
-        console.log('teste', ifCategoryExist[0].quantity)
         if (ifCategoryExist[0].quantity === 0) {
-            res.status(400).send({ message: 'Bad request!' })
+            res.status(400).send({ message: process.env.ERROR_MESSSAGE_400 })
             return
         }
         next()
     } catch (err) {
         console.log(err)
-    } finally {
-        db.destroy()
     }
 }
 
 verifyWhenDelete = async (req, res, next) => {
     try {
-        db.connect()
-        const countDevice = await Device.query()
+        const countDevice = await db.Device.query()
             .count('id as quantity')
             .where('id', req.params.id)
             .andWhere('isDeleted', 0)
         if (countDevice[0].quantity === 0) {
-            res.status(404).send({ message: 'Device not found!' })
+            res.status(404).send({ message: process.env.ERROR_MESSSAGE_404 })
             return
         }
         next()
     } catch (err) {
         console.log(err)
-    } finally {
-        db.destroy()
     }
 }
 

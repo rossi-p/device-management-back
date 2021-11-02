@@ -11,12 +11,16 @@ module.exports = {
       user:     process.env.USER_DEV,
       password: process.env.PASSWORD_DEV
     }, 
+    pool: {
+      min: parseInt(process.env.POOL_MIN_DEV),
+      max: parseInt(process.env.POOL_MAX_DEV)
+    },
     migrations: {
-      tableName: 'knex_migrations',
-      directory: './api/db/migrations'
+      tableName: process.env.KNEX_TABLENAME,
+      directory: process.env.MIGRATIONS_DIR
     },
     seeds: {
-      directory: './api/db/seeds'
+      directory: process.env.SEEDS_DIR
     },
   },
 
@@ -30,16 +34,16 @@ module.exports = {
       password: process.env.PASSWORD_PROD
     }, 
     pool: {
-      min: 2,
-      max: 10
+      min: parseInt(process.env.POOL_MIN_PROD),
+      max: parseInt(process.env.POOL_MAX_PROD)
     },
     migrations: {
-      tableName: 'knex_migrations',
-      directory: './api/db/migrations'
+      tableName: process.env.KNEX_TABLENAME,
+      directory: process.env.MIGRATIONS_DIR
     },
     seeds: {
-      directory: './api/db/seeds'
+      directory: process.env.SEEDS_DIR
     },
   }
 
-};
+}

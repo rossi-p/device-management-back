@@ -1,57 +1,43 @@
-const db = require('../db/config')
-const { Category } = require('../models/Category')
+const db = require('../db')
+require('dotenv').config()
 
 exports.all = async (req, res) => {
   try {
-    db.connect()
-    const categories = await Category.query()
+    const categories = await db.Category.query()
       .select('id', 'name')
       .where('isDeleted', 0)
     res.status(200).send({ data: categories })
   }
   catch (err) {
     console.log(err)
-    res.status(404).send({ message: 'Data not found!' })
-  }
-  finally {
-    db.destroy()
+    res.status(404).send({ message: process.env.ERROR_MESSAGE_404 })
   }
 }
 
 exports.create = async (req, res) => {
-  console.log(req.body)
   try {
-    db.connect()
-    await Category.query().insert({
+    await db.Category.query().insert({
       name: req.body.name
     })
-    res.status(200).send({ message: 'Category created with success!' })
+    res.status(200).send({ message: process.env.SUCCESS_MESSSAGE_200 })
   }
   catch (err) {
     console.log(err)
-    res.status(500).send({ message: 'Internal server error!' })
-  }
-  finally {
-    db.destroy()
+    res.status(500).send({ message: process.env.ERROR_MESSSAGE_500 })
   }
 }
 
 exports.delete = async (req, res) => {
-  console.log(req.params.id)
   try {
-    db.connect()
-    await Category.query()
+    await db.Category.query()
       .patch({
         isDeleted: 1
       })
       .where('id', req.params.id)
-    res.status(200).send({ message: 'Category deleted with success!' })
+    res.status(200).send({ message: process.env.SUCCESS_MESSSAGE_200 })
   }
   catch (err) {
     console.log(err)
-    res.status(500).send({ message: 'Internal server error!' })
-  }
-  finally {
-    db.destroy()
+    res.status(500).send({ message: process.env.ERROR_MESSSAGE_500 })
   }
 }
