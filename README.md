@@ -2,7 +2,7 @@
 
 The server is up and running on 
 [ec2-52-67-226-180.sa-east-1.compute.amazonaws.com](http://ec2-52-67-226-180.sa-east-1.compute.amazonaws.com/)
-Deploied on an EC2 machine, with Nginx as a proxy redirecting the API to port 80. 
+Deployed on an EC2 machine, with Nginx as a proxy redirecting the API to port 80. 
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
